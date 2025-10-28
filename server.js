@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Trang chủ: hiển thị danh sách bài viết
 app.get("/", (req, res) => {
-  db.all("SELECT * FROM diary ORDER BY id DESC", [], (err, rows) => {
+  db.query("SELECT * FROM diary ORDER BY id DESC", (err, rows) => {
     if (err) {
       console.error("Lỗi truy vấn DB:", err);
       return res.status(500).send("Lỗi truy vấn DB");
@@ -29,7 +29,7 @@ app.post("/add", (req, res) => {
     return res.status(400).send("Thiếu tiêu đề hoặc nội dung");
   }
 
-  db.run(
+  db.query(
     "INSERT INTO diary (title, content) VALUES (?, ?)",
     [title, content],
     (err) => {
@@ -44,7 +44,7 @@ app.post("/add", (req, res) => {
 
 // Xóa bài viết
 app.post("/delete/:id", (req, res) => {
-  db.run("DELETE FROM diary WHERE id = ?", [req.params.id], (err) => {
+  db.query("DELETE FROM diary WHERE id = ?", [req.params.id], (err) => {
     if (err) {
       console.error("Lỗi xóa bài:", err);
       return res.status(500).send("Lỗi khi xóa bài viết");
@@ -58,7 +58,7 @@ app.post("/edit/:id", (req, res) => {
   const { title, content } = req.body;
   const id = req.params.id;
 
-  db.run(
+  db.query(
     "UPDATE diary SET title = ?, content = ? WHERE id = ?",
     [title, content, id],
     (err) => {
