@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🌸 Nhật ký của tôi</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/scripts.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>📔 Viết Nhật Ký</h1>
+      <div class="new-post-container">
+        <form method="POST" action="/add" class="add-form">
+          <input type="text" name="title" placeholder="Tiêu đề..." required />
+          <textarea
+            name="content"
+            placeholder="Nội dung hôm nay..."
+            required
+          ></textarea>
+          <button type="submit">💖 Lưu</button>
+        </form>
+      </div>
+    </header>
+
+    <main>
+      <% if (diary.length === 0) { %>
+      <p class="empty">Chưa có nhật ký nào cả </p>
+      <% } %> <% diary.forEach(diary => { %>
+      <div class="card">
+        <h2><%= diary.title %></h2>
+        <p><%= diary.content %></p>
+        <small>🕓 <%= diary.created_at %></small>
+
+        <form
+          action="/delete/<%= diary.id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit" class="delete">🗑️ Xóa</button>
+        </form>
+
+        <button
+          class="edit-btn"
+          data-id="<%= diary.id %>"
+          data-title="<%- diary.title %>"
+          data-content="<%- diary.content %>"
+        >
+          ✏️ Sửa
+        </button>
+      </div>
+      <% }) %>
+    </main>
+
+    <!-- Modal edit -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <h3>Sửa nhật ký</h3>
+        <form id="editForm" method="POST">
+          <input type="text" name="title" id="editTitle" required />
+          <textarea name="content" id="editContent" required></textarea>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">💾 Lưu</button>
+            <button type="button" class="cancel-btn" onclick="closeEdit()">
+              Đóng
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
