@@ -2,29 +2,29 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>🌸 Nhật ký của tôi</title>
+    <title>🌸日記🌸</title>
     <link rel="stylesheet" href="/style.css" />
     <script src="/scripts.js" defer></script>
   </head>
   <body>
     <header>
-      <h1>📔 Viết Nhật Ký</h1>
+      <h1>📔日記を書く</h1>
       <div class="new-post-container">
         <form method="POST" action="/add" class="add-form">
-          <input type="text" name="title" placeholder="Tiêu đề..." required />
+          <input type="text" name="title" placeholder="タイトル..." required />
           <textarea
             name="content"
-            placeholder="Nội dung hôm nay..."
+            placeholder="今日の内容..."
             required
           ></textarea>
-          <button type="submit">💖 Lưu</button>
+          <button type="submit">保存</button>
         </form>
       </div>
     </header>
 
     <main>
       <% if (diary.length === 0) { %>
-      <p class="empty">Chưa có nhật ký nào cả </p>
+      <p class="empty">まだログはありません </p>
       <% } %> <% diary.forEach(diary => { %>
       <div class="card">
         <h2><%= diary.title %></h2>
@@ -36,7 +36,7 @@
           method="POST"
           style="display: inline"
         >
-          <button type="submit" class="delete">🗑️ Xóa</button>
+          <button type="submit" class="delete">🗑️削除</button>
         </form>
 
         <button
@@ -45,7 +45,7 @@
           data-title="<%- diary.title %>"
           data-content="<%- diary.content %>"
         >
-          ✏️ Sửa
+          ✏️ 編集
         </button>
       </div>
       <% }) %>
@@ -54,14 +54,14 @@
     <!-- Modal edit -->
     <div id="editModal" class="modal">
       <div class="modal-content">
-        <h3>Sửa nhật ký</h3>
+        <h3>編集日記</h3>
         <form id="editForm" method="POST">
           <input type="text" name="title" id="editTitle" required />
           <textarea name="content" id="editContent" required></textarea>
           <div class="modal-buttons">
-            <button type="submit" class="save-btn">💾 Lưu</button>
+            <button type="submit" class="save-btn">保存</button>
             <button type="button" class="cancel-btn" onclick="closeEdit()">
-              Đóng
+              閉じる
             </button>
           </div>
         </form>
