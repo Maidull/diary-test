@@ -246,6 +246,22 @@ main {
   white-space: pre-wrap;
 }
 
+.image-label {
+  display: inline-block;
+  background-color: #a855f7;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: 0.3s;
+}
+
+.image-label:hover {
+  background-color: #7e22ce;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .new-post-container {

@@ -10,9 +10,18 @@
     <header>
       <h1>📔日記を書く</h1>
       <div class="new-post-container">
-        <form method="POST" action="/add" class="add-form" enctype="multipart/form-data">
+        <form
+          method="POST"
+          action="/add"
+          class="add-form"
+          enctype="multipart/form-data"
+        >
           <input type="text" name="title" placeholder="タイトル..." required />
-          <textarea name="content" placeholder="今日の内容..." required></textarea>
+          <textarea
+            name="content"
+            placeholder="今日の内容..."
+            required
+          ></textarea>
           <input type="file" name="image" accept="image/*" />
           <button type="submit">保存</button>
         </form>
@@ -21,39 +30,95 @@
 
     <main class="grid-container">
       <% if (diary.length === 0) { %>
-        <p class="empty">まだログはありません </p>
-      <% } %>
+      <p class="empty">まだログはありません</p>
+      <% } %> <% diary.forEach(diary => { %>
+      <div
+        class="card"
+        data-title="<%- diary.title %>"
+        data-content="<%- diary.content %>"
+        data-image="<%- diary.image %>"
+      >
+        <% if (diary.image) { %>
+        <img
+          src="<%= diary.image %>"
+          alt="<%= diary.title %>"
+          class="thumbnail"
+        />
+        <% } else { %>
+        <div class="no-image">No image</div>
+        <% } %>
+        <h2><%= diary.title %></h2>
 
-      <% diary.forEach(diary => { %>
-        <div class="card" data-title="<%- diary.title %>" data-content="<%- diary.content %>" data-image="<%- diary.image %>">
-          <% if (diary.image) { %>
-            <img src="<%= diary.image %>" alt="<%= diary.title %>" class="thumbnail"/>
-          <% } else { %>
-            <div class="no-image">No image</div>
-          <% } %>
-          <h2><%= diary.title %></h2>
+        <div class="actions">
+          <form action="/delete/<%= diary.id %>" method="POST">
+            <button type="submit" class="delete">🗑️削除</button>
+          </form>
 
-          <div class="actions">
-            <form action="/delete/<%= diary.id %>" method="POST">
-              <button type="submit" class="delete">🗑️削除</button>
-            </form>
-
-            <button class="edit-btn" data-id="<%= diary.id %>" data-title="<%- diary.title %>" data-content="<%- diary.content %>">✏️ 編集</button>
-          </div>
+          <button
+            class="edit-btn"
+            data-id="<%= diary.id %>"
+            data-title="<%- diary.title %>"
+            data-content="<%- diary.content %>"
+          >
+            ✏️ 編集
+          </button>
         </div>
+      </div>
       <% }) %>
     </main>
 
     <!-- Modal edit -->
+    <!-- Modal chỉnh sửa bài viết -->
     <div id="editModal" class="modal">
       <div class="modal-content">
-        <h3>編集日記</h3>
-        <form id="editForm" method="POST">
-          <input type="text" name="title" id="editTitle" required />
-          <textarea name="content" id="editContent" required></textarea>
+        <h3>投稿を編集</h3>
+
+        <form
+          id="editForm"
+          action=""
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <input
+            type="text"
+            id="edit-title"
+            name="title"
+            placeholder="タイトル"
+            required
+          />
+          <textarea
+            id="edit-content"
+            name="content"
+            placeholder="内容"
+            required
+          ></textarea>
+
+          <!-- Ảnh hiện tại -->
+          <div class="current-image-box">
+            <p>現在の画像：</p>
+            <img
+              id="edit-current-image"
+              src=""
+              alt="現在の画像"
+              style="max-width: 100%; border-radius: 8px; margin-bottom: 8px"
+            />
+          </div>
+
+          <!-- Input chọn ảnh mới -->
+          <label for="edit-image" class="image-label">📷 ファイルを選択</label>
+          <input
+            type="file"
+            id="edit-image"
+            name="image"
+            accept="image/*"
+            style="display: none"
+          />
+
           <div class="modal-buttons">
             <button type="submit" class="save-btn">保存</button>
-            <button type="button" class="cancel-btn" onclick="closeEdit()">閉じる</button>
+            <button type="button" class="cancel-btn" onclick="closeModal()">
+              キャンセル
+            </button>
           </div>
         </form>
       </div>
@@ -62,7 +127,7 @@
     <!-- Popup xem bài -->
     <div id="viewModal" class="modal">
       <div class="modal-content">
-        <img id="viewImage" src="" alt="">
+        <img id="viewImage" src="" alt="" />
         <h3 id="viewTitle"></h3>
         <p id="viewContent"></p>
         <button class="cancel-btn" onclick="closeView()">閉じる</button>

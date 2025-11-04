@@ -65,18 +65,38 @@ app.post("/delete/:id", (req, res) => {
   });
 });
 
-// Sửa bài viết
-app.post("/edit/:id", (req, res) => {
+// Sửa bài viết (có thể có ảnh mới)
+app.post("/edit/:id", upload.single("image"), (req, res) => {
   const { title, content } = req.body;
   const { id } = req.params;
 
-  db.query("UPDATE diary SET title = ?, content = ? WHERE id = ?", [title, content, id], (err) => {
-    if (err) {
-      console.error("❌ Lỗi cập nhật bài:", err);
-      return res.status(500).send("Lỗi cập nhật bài viết");
-    }
-    res.redirect("/");
-  });
+  // Nếu có ảnh mới thì cập nhật, nếu không giữ nguyên ảnh cũ
+  if (req.file) {
+    const image = "/uploads/" + req.file.filename;
+    db.query(
+      "UPDATE diary SET title = ?, content = ?, image = ? WHERE id = ?",
+      [title, content, image, id],
+      (err) => {
+        if (err) {
+          console.error("❌ Lỗi cập nhật bài:", err);
+          return res.status(500).send("Lỗi cập nhật bài viết");
+        }
+        res.redirect("/");
+      }
+    );
+  } else {
+    db.query(
+      "UPDATE diary SET title = ?, content = ? WHERE id = ?",
+      [title, content, id],
+      (err) => {
+        if (err) {
+          console.error("❌ Lỗi cập nhật bài:", err);
+          return res.status(500).send("Lỗi cập nhật bài viết");
+        }
+        res.redirect("/");
+      }
+    );
+  }
 });
 
 app.listen(PORT, "0.0.0.0", () => {
