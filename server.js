@@ -10,7 +10,7 @@ const PORT = 3001;
 // Cấu hình upload ảnh
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/uploads/");
+    cb(null, "public/upload/");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
