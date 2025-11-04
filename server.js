@@ -1,11 +1,24 @@
 import express from "express";
 import bodyParser from "body-parser";
+import multer from "multer";
+import path from "path";
 import db from "./db.js";
 
 const app = express();
-const PORT = 3001; 
+const PORT = 3001;
 
-// View engine và static
+// Cấu hình upload ảnh
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
+
+// Cấu hình view và static
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,18 +34,24 @@ app.get("/", (req, res) => {
   });
 });
 
-// Thêm bài viết
-app.post("/add", (req, res) => {
+// Thêm bài viết (có ảnh)
+app.post("/add", upload.single("image"), (req, res) => {
   const { title, content } = req.body;
+  const image = req.file ? "/uploads/" + req.file.filename : null;
+
   if (!title || !content) return res.status(400).send("Thiếu tiêu đề hoặc nội dung");
 
-  db.query("INSERT INTO diary (title, content) VALUES (?, ?)", [title, content], (err) => {
-    if (err) {
-      console.error("❌ Lỗi thêm bài:", err);
-      return res.status(500).send("Lỗi khi thêm bài viết");
+  db.query(
+    "INSERT INTO diary (title, content, image) VALUES (?, ?, ?)",
+    [title, content, image],
+    (err) => {
+      if (err) {
+        console.error("❌ Lỗi thêm bài:", err);
+        return res.status(500).send("Lỗi khi thêm bài viết");
+      }
+      res.redirect("/");
     }
-    res.redirect("/");
-  });
+  );
 });
 
 // Xóa bài viết
